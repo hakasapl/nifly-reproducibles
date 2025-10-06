@@ -29,18 +29,19 @@ project(${PROJECT_NAME})
 # Externals
 add_subdirectory(nifly)
 
-# Configure resource templates
-set(EXE_NAME "PGPatcher")
-configure_file(
-    ${CMAKE_SOURCE_DIR}/resources/meta.rc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/resources/meta.rc
-    @ONLY
-)
+# Ensure CASE_NAME is defined
+if(NOT DEFINED CASE_NAME)
+    message(FATAL_ERROR "CASE_NAME is not defined. Pass -DCASE_NAME=<name> to CMake.")
+endif()
 
 # Add Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS reproducibles/${CASE_NAME}/main.cpp)
 
-add_executable(PGPatcher
+if(SOURCES STREQUAL "")
+    message(FATAL_ERROR "No source file found for CASE_NAME='${CASE_NAME}'. Expected reproducibles/${CASE_NAME}/main.cpp")
+endif()
+
+add_executable(${PROJECT_NAME}
     ${SOURCES}
 )
 
